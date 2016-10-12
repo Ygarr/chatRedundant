@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.1.xsd
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
+
+    <context:component-scan base-package="com.company.chat" />
+
+    <mvc:resources mapping="resources/**" location="/WEB-INF/resources/" />
+
+    <mvc:annotation-driven />
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+
+    <bean name="localDataSource" class="org.apache.commons.dbcp2.BasicDataSource" >
+        <property name="url" value ="jdbc:mysql://127.0.0.1:3306/mychat" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+        <property name="initialSize" value="2" />
+        <property name="maxTotal" value="10" />
+    </bean>
+
+    <bean name="localDataSource2" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/mychat" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+
+    </bean>
+
+    <!--
+    <bean name="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/mychat" />
+        <property name="resourceRef" value="true" />
+    </bean>
+    -->
+
+
+
+    <bean name="serverDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://127.4.183.130:3306/mychat" />
+        <property name="username" value="admin9c6sfyD" />
+        <property name="password" value="zkJJvMuKtmDj" />
+    </bean>
+
+    <!--вместо конкретных параметров, которые вообще можно перенести в отдельный txt, укажем ссылку на xml config-->
+    <!--<bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">-->
+        <!--<property name="dataSource" ref="localDataSource"/>-->
+        <!--<property name="packagesToScan" value="com.company.chat.model"/>-->
+        <!--<property name="hibernateProperties">-->
+            <!--<value>-->
+                <!--hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect-->
+                <!--hibernate.show_sql=true-->
+            <!--</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- Настройки фабрики сессий Хибернейта пример старый -->
+    <!--<bean id="sessionFactory"-->
+          <!--class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">-->
+        <!--<property name="dataSource" ref="dataSource" />-->
+        <!--<property name="configLocation">-->
+            <!--<value>classpath:hibernate.cfg.xml</value>-->
+        <!--</property>-->
+        <!--<property name="configurationClass">-->
+            <!--<value>org.hibernate.cfg.AnnotationConfiguration</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- Настройки фабрики сессий Хибернейта -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="localDataSource2" />
+        <property name="packagesToScan" value="com.company.chat.model"/>
+        <property name="configLocation">
+            <value>WEB-INF/hibernate.cfg.xml</value>
+        </property>
+    </bean>
+
+    <bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+</beans>
